@@ -2327,5 +2327,18 @@ class Component extends DCLogic {
   }
 }
 </script>
+<script>
+// Link back to the demo picker; sits outside the phone so it never shows in the prototype itself.
+(function () {
+  function add() {
+    if (document.getElementById('demo-back')) return;
+    var a = document.createElement('a');
+    a.id = 'demo-back'; a.href = '../'; a.textContent = '\u2190 All demos'; a.setAttribute('data-lc', '1');
+    a.style.cssText = 'position:fixed;top:16px;left:16px;z-index:2147483647;padding:8px 14px;border-radius:18px;background:rgba(255,255,255,.85);color:#0A0A0A;font:600 14px/1.2 -apple-system,system-ui,sans-serif;text-decoration:none;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.08);backdrop-filter:blur(8px)';
+    document.body.appendChild(a);
+  }
+  if (document.readyState === 'complete') setTimeout(add, 300); else window.addEventListener('load', function () { setTimeout(add, 300); });
+})();
+</script>
 </body>
 </html>
