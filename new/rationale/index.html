@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ping · Beyond the Chatbox — design rationale</title>
+<meta name="description" content="Design rationale for Ping, a proactive consumer AI that surfaces signals across your interests without a chat box. By Leqi Huang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Instrument+Serif&display=swap">
+<style>
+:root{--ink:#17140E;--muted:rgba(23,20,14,.62);--line:rgba(23,20,14,.1);--paper:#F5EFDD;--card:#FFFDF6;--gold:#B8862B;--olive:#3E3823}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 18px/1.6 'DM Sans',system-ui,sans-serif}
+a{color:var(--ink);text-decoration-color:rgba(23,20,14,.35);text-underline-offset:3px}
+a:hover{text-decoration-color:var(--ink)}
+.wrap{max-width:760px;margin:0 auto;padding:72px 24px 96px}
+header{margin-bottom:56px}
+.kicker{font-size:13px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{font:400 clamp(44px,8vw,68px)/1 'Instrument Serif',serif;letter-spacing:-.5px;margin:14px 0 18px}
+.byline{color:var(--muted);font-size:15px}
+.cta{display:inline-flex;align-items:center;gap:10px;margin-top:28px;padding:14px 22px;border-radius:999px;background:var(--ink);color:var(--paper);text-decoration:none;font-weight:600;font-size:16px}
+.cta:hover{background:#2c271c}
+nav.toc{margin:40px 0 0;padding:20px 24px;border-radius:20px;background:var(--card);border:1px solid var(--line)}
+nav.toc ol{margin:0;padding-left:20px;columns:2;column-gap:32px;font-size:15px}
+nav.toc li{margin:0 0 6px;break-inside:avoid}
+nav.toc a{text-decoration:none}
+section{padding-top:48px;margin-top:48px;border-top:1px solid var(--line)}
+h2{font:400 40px/1.1 'Instrument Serif',serif;letter-spacing:-.3px;margin:0 0 20px}
+h3{font-size:16px;font-weight:600;margin:28px 0 8px}
+p{margin:0 0 16px}
+ol,ul{padding-left:22px;margin:0 0 16px}
+li{margin:6px 0}
+strong{font-weight:600}
+.quote{font-family:'Instrument Serif',serif;font-size:24px;line-height:1.3}
+.callout{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px 24px;margin:20px 0}
+table{width:100%;border-collapse:collapse;margin:16px 0 20px;font-size:16px;background:var(--card);border-radius:16px;overflow:hidden}
+th,td{text-align:left;padding:12px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+th{background:var(--ink);color:var(--paper);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
+tr:last-child td{border-bottom:0}
+.steps li::marker{font-weight:600}
+footer{margin-top:72px;padding-top:24px;border-top:1px solid var(--line);color:var(--muted);font-size:14px}
+@media (max-width:560px){nav.toc ol{columns:1}h2{font-size:34px}body{font-size:17px}}
+</style>
+</head>
+<body>
+<main class="wrap">
+<header>
+  <div class="kicker">Ping · UI/UX design take-home</div>
+  <h1>Beyond the Chatbox</h1>
+  <div class="byline">Design rationale · Leqi Huang · October 2026</div>
+  <a class="cta" href="https://www.figma.com/proto/smACzBWkIhEn6QWfM6Il7w/Ping-%E2%80%94-Beyond-the-Chatbox--prototype-?page-id=0%3A1&amp;node-id=87-8387&amp;viewport=469%2C-4063%2C0.41&amp;t=W7O1o0J1lkufDpSJ-1&amp;scaling=min-zoom&amp;content-scaling=fixed&amp;starting-point-node-id=87%3A8387&amp;show-proto-sidebar=1">Open the Figma prototype →</a>
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#brief">The brief, and how I read it</a></li>
+      <li><a href="#home">Home: a daily brief that ends</a></li>
+      <li><a href="#detail">Signal detail</a></li>
+      <li><a href="#next">Next step: the tear, then a timeline</a></li>
+      <li><a href="#chat">Why there is no chat</a></li>
+      <li><a href="#offscreen">Off screen: lock screen and Dynamic Island</a></li>
+      <li><a href="#trust">Trust: show the work, let people correct it</a></li>
+      <li><a href="#tradeoffs">Trade-offs, and what I'd test next</a></li>
+      <li><a href="#demo">A 2-minute demo path</a></li>
+    </ol>
+  </nav>
+</header>
+
+<section id="brief">
+  <h2>The brief, and how I read it</h2>
+  <p><em>Beyond the Chatbox</em> asks for a consumer AI that does not wait for a prompt. It keeps surfacing signals, changes and opportunities across interests the user has already picked, while the research and monitoring happen behind the scenes. The user opens the app with no task in mind.</p>
+  <p>The brief asks for three designs: <strong>Home / discovery</strong> (how do signals from different interests feel coherent and worth browsing?), <strong>Signal detail</strong> (what does the user need to understand before deciding whether they care?) and a <strong>Next-step state</strong> (what does acting on it look like?). Every screen has to answer three questions:</p>
+  <ol>
+    <li><strong>What happened, or what is relevant?</strong> One plain sentence, no jargon.</li>
+    <li><strong>Why does it matter to me?</strong> The personal reason, shown before the details.</li>
+    <li><strong>What can I do from here?</strong> One main action and one way out. Never a blank text field.</li>
+  </ol>
+  <p>It also rules things out: not a Reddit-like discussion feed, a long-form research app, a generic chatbot, a news reader, or a marketplace of random exclusive opportunities. Chat can exist, but it must not be required or dominant, and the intelligence should mostly sit underneath the interface.</p>
+  <div class="callout"><strong>How I read it.</strong> I made Ping the hunter for the user's interests: tables, tickets, restocks and appointments, the signals that change fast and will not wait. Two rules of my own came from that, beyond what the brief asks. There is no chat: every decision is a tap on an option Ping has already prepared. And Ping acts only after a clear yes. It can watch, hold and prepare on its own, but it never books or pays without confirmation.</div>
+</section>
+
+<section id="home">
+  <h2>Home: a daily brief that ends</h2>
+  <p>Home is a short list for today, not a feed. A headline gives the count and the one thing that's urgent:</p>
+  <p class="quote">"6 new today. Vela won't last."</p>
+  <p>Under it, a single sensing line ("Watching 23 places · checked 2 min ago") shows that Ping is working without asking for attention.</p>
+  <h3>Ticket stubs</h3>
+  <p>Every find is a ticket stub with a photo, a category color, the deadline and one action. I first tried a different object for each category, but it was too much to read. Stubs give six categories one shape, and the category colors (concerts, reservations, movies, vintage, restocks, appointments) carry the difference.</p>
+  <h3>Tabs with context</h3>
+  <p><em>For you / Following / Nearby</em> sit in one segmented control. Each tab says why it exists ("3 from shops and artists you follow", "3 within 20 min of Greenpoint"), so it doesn't look like the same feed sorted three ways.</p>
+  <h3>A "Handled today" fold</h3>
+  <p>When you act on a card or let it go, it flies down into a "Handled today" fold. The list gets shorter, and the end of the list means you're done for today. That ending is why Ping doesn't feel like another inbox.</p>
+</section>
+
+<section id="detail">
+  <h2>Signal detail</h2>
+  <p>Tapping a stub opens its photo into the full detail page. Every category uses the same layout, so once you've read one detail page, you can read them all:</p>
+  <ul>
+    <li><strong>What happened.</strong> For example, "A party of two cancelled their Friday 8:30 pm table."</li>
+    <li><strong>Why you.</strong> The personal reason: "You've hunted it for 3 weeks."</li>
+    <li><strong>Insider note.</strong> Something you wouldn't find yourself, like "Ask for the counter. It is the same menu."</li>
+    <li><strong>Where this came from.</strong> Where Ping saw it and when, so the claim can be checked.</li>
+    <li><strong>What I used about you.</strong> The personal data behind this suggestion. It's display-only on purpose: here it only needs to be seen, not edited. Editing lives on the profile page.</li>
+  </ul>
+  <p>The main action and the way out (<strong>Grab it</strong> / <strong>Not now</strong>) sit right under the title on every detail page, so deciding never needs scrolling.</p>
+</section>
+
+<section id="next">
+  <h2>Next step: the tear, then a timeline</h2>
+  <p><strong>The main action is the yes.</strong> When you tap it, the stub tears along its perforation and the hunt moves to the Hunts tab. The tear makes a commitment you can see, and it's why the follow-up lives somewhere else: Today stays a brief, and Hunts holds the work in progress.</p>
+  <p><strong>A hunt is a timeline, not a progress bar.</strong> My first version finished in two seconds without a single question, and it felt like a magic trick, not like help. Now every hunt follows the same steps:</p>
+  <ol class="steps">
+    <li><strong>Waiting.</strong> Ping watches and checks in.</li>
+    <li><strong>A fork.</strong> When there's a real choice, Ping stops and asks with two prepared options.</li>
+    <li><strong>Working.</strong> Ping acts on the answer.</li>
+    <li><strong>Hold.</strong> Ping holds the spot. Paying needs Face ID.</li>
+    <li><strong>Done.</strong> The result is confirmed, with an offer to <em>Always do this</em> next time.</li>
+  </ol>
+  <p>The forks are where users feel in control. Each one is a real decision:</p>
+  <table>
+    <thead><tr><th>Hunt</th><th>Ping asks</th></tr></thead>
+    <tbody>
+      <tr><td>Osteria Vela</td><td>A table at 9:00, or the counter at 8:15?</td></tr>
+      <tr><td>Opening-night IMAX</td><td>Row F now, or wait for row J?</td></tr>
+      <tr><td>Nova Lanes</td><td>GA at $28, or the balcony at $45?</td></tr>
+      <tr><td>Suede bomber</td><td>Put down a $10 deposit to hold it till 6?</td></tr>
+      <tr><td>Wind-up robots</td><td>Only red is left. Still want it?</td></tr>
+      <tr><td>Lumen Studio</td><td>Tue at 7:00, or Thu at 6:00?</td></tr>
+    </tbody>
+  </table>
+  <p><strong>Not now is a next step too.</strong> Letting a card go asks for a one-tap reason, and Ping sends fewer like it.</p>
+</section>
+
+<section id="chat">
+  <h2>Why there is no chat</h2>
+  <p>The brief allows chat but says it can't be required or dominant. I left it out entirely, because every decision in a hunt has a small, known set of answers. Typing "the 9:00 one please" is slower and more error-prone than tapping a button that says 9:00. And a chat box suggests the user should start things, which works against a proactive product.</p>
+  <p>The one place where users describe what they want is <strong>New hunt</strong>. Even there, it's four photo tiles (reservations, tickets, restocks, appointments) plus one optional line of text. I also tried a free-form "What should I look for?" screen, but the tiles were clearer and quicker to start with, so I kept the original design.</p>
+</section>
+
+<section id="offscreen">
+  <h2>Off screen: lock screen and Dynamic Island</h2>
+  <p>Hunts take minutes or hours, so most of the waiting happens with the phone locked.</p>
+  <ul>
+    <li><strong>Lock screen.</strong> A notification ("6 things changed today") is often the reason a user opens Ping at all, and a Live Activity shows the countdown and the current step of a hunt.</li>
+    <li><strong>Dynamic Island, only after you leave.</strong> iOS hides an app's own Live Activity while the app is open, so the prototype shows the island only once you've left Ping. The hunt sheet has a "Lock phone · watch it in the island" button to demonstrate this.</li>
+    <li><strong>Forks reach you where you are.</strong> At 12:01, when the Nova Lanes tickets drop, the island expands and asks <em>GA $28 or balcony $45?</em> You answer in one tap, without opening the app.</li>
+  </ul>
+</section>
+
+<section id="trust">
+  <h2>Trust: show the work, let people correct it</h2>
+  <p>A proactive AI only works if people believe its suggestions and can fix them when they're wrong. Three things in the prototype do that:</p>
+  <ul>
+    <li><strong>Sources on every find.</strong> Where Ping saw it and how long ago.</li>
+    <li><strong>What I know about you.</strong> The profile page lists <em>your usual</em> (party size, budget, neighborhood), <em>what I learned lately</em> (each one waits until you confirm or correct it), and <em>what I watch</em> (places and people you follow).</li>
+    <li><strong>"Not now" asks why.</strong> Letting a card go asks for a one-tap reason: too far, too pricey, wrong time, not my thing. The toast says what Ping will change, e.g. "Got it. Fewer things far from Greenpoint." A dismissal becomes feedback Ping learns from.</li>
+  </ul>
+  <p>Money always needs Face ID, even with <em>Always do this</em> turned on. Automation can save time, but it never pays without you.</p>
+</section>
+
+<section id="tradeoffs">
+  <h2>Trade-offs, and what I'd test next</h2>
+  <h3>Trade-offs I made</h3>
+  <ul>
+    <li><strong>No setup step before a hunt.</strong> Defaults come from your preferences, so the main action starts right away. The cost: an unusual request needs a fork later, not a form up front.</li>
+    <li><strong>One card shape for everything.</strong> Easier to scan, but less character per category. Photos and colors make up some of it.</li>
+    <li><strong>A demo skip button.</strong> Real hunts take hours, so the prototype can jump ahead. A shipped product wouldn't have it.</li>
+    <li><strong>No chat.</strong> Faster for known choices, but a request Ping didn't expect has nowhere to go except New hunt.</li>
+    <li><strong>Mostly time-sensitive opportunities.</strong> All six signals in the prototype are things you could act on today. A real brief would also carry quieter changes, like a band announcing an album, that need no action at all.</li>
+  </ul>
+  <h3>What I'd test next</h3>
+  <ol>
+    <li><strong>The tear metaphor.</strong> Do people understand that tearing the stub means "Ping is on it", and that the hunt is now under Hunts?</li>
+    <li><strong>Trust in <em>Always do this</em>.</strong> At what point do people turn automation on, and do they regret it?</li>
+    <li><strong>How often to notify.</strong> How many finds a day feel useful before Ping becomes noise, and does the daily ending help?</li>
+  </ol>
+</section>
+
+<section id="demo">
+  <h2>A 2-minute demo path</h2>
+  <p>Open the <a href="https://www.figma.com/proto/smACzBWkIhEn6QWfM6Il7w/Ping-%E2%80%94-Beyond-the-Chatbox--prototype-?page-id=0%3A1&amp;node-id=87-8387&amp;viewport=469%2C-4063%2C0.41&amp;t=W7O1o0J1lkufDpSJ-1&amp;scaling=min-zoom&amp;content-scaling=fixed&amp;starting-point-node-id=87%3A8387&amp;show-proto-sidebar=1">Figma prototype</a>. It starts on flow 1, the main line:</p>
+  <ol>
+    <li>Lock screen: Ping noticed 6 things overnight. Tap the notification.</li>
+    <li>Home: one sentence says what happened. Tap the Vela photo to open its detail, see the sources, then tap Grab it.</li>
+    <li>The ticket tears. The stub flies into Hunts, and the card files under "Handled today".</li>
+    <li>Ping needs you. Tap the toast or the Hunts badge, then the Vela row: pick a time, book it.</li>
+    <li>Done, with "Always do this". Go back to Today.</li>
+    <li>Keep going: tap the IMAX ticket, then Hunt 2 seats. Today now shows 2 handled and 2 hunts.</li>
+    <li>In Hunts, skip to the drop, pick seats when Ping asks, and pay with Face ID.</li>
+  </ol>
+  <p>The other flows are in the prototype's flow menu on the left: every other hunt, the Dynamic Island, tabs and the profile.</p>
+</section>
+
+<footer>Leqi Huang · Ping UI/UX design take-home · October 2026</footer>
+</main>
+</body>
+</html>
